@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database-presistent-volume-claim
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: database-presistent-volume-claim
+  template:
+    metadata:
+      labels:
+        component: database-presistent-volume-claim
+    spec:
+      containers:
+        - name: kubernetesk8s
+          image: brittofrancis/kubernetesk8s
+          env:
+            - name: POSTGRES_HOST
+              value: postgres-cluster-ip-service
+            - name: POSTGRES_PORT
+              value: '5432'
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+
+# TODO: Add Redis Environment Variables
