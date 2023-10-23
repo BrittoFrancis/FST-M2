@@ -1,13 +1,19 @@
-# Specify Base Image
-FROM docker.io/nodemon:latest
-# Work Directory
+#multi step file
+#build phase
+FROM node:18-alpine as builder
 WORKDIR /usr/app
-# COPY Files
 COPY package.json .
 COPY nodemon.json .
 COPY package-lock.json .
-# Install Dependecies
 RUN npm install
 COPY ./ ./
-# Startup Command
-CMD ["npm", "start"]
+RUN npm run build
+#run phase
+FROM node:18-alpine
+WORKDIR /usr/app
+COPY package.json .
+COPY nodemon.json .
+COPY package-lock.json .
+RUN npm install
+COPY --from=builder /usr/app/dist ./
+CMD ["node", "index.js" ]
